@@ -2,24 +2,23 @@
 
 namespace App\Console\Commands;
 
-use App\MerchantDaily;
 use Illuminate\Console\Command;
 
-class BestSeller extends Command
+class BestFunnel extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'merchant:bestseller';
+    protected $signature = 'funnel:best';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Gets best seller merchant';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -38,12 +37,12 @@ class BestSeller extends Command
      */
     public function handle()
     {
-        $bestSeller = MerchantDaily::getBestSeller();
-        if (!count($bestSeller))
+        $bestSellers = \App\FunnelDaily::getBestSeller();
+        if (!count($bestSellers))
             $this->error("RUN MIGRATIONS AND SEEDS");
         else {
-            $bestSeller = reset($bestSeller);
-            $this->comment(sprintf("Best seller is %s %s with %s € in sales!", $bestSeller->FirstName, $bestSeller->LastName, $bestSeller->SaleTotal));
+            $headers = array_keys((array)reset($bestSellers));
+            $this->table($headers, json_decode(json_encode($bestSellers), true));
         }
     }
 }
